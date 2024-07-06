@@ -1,2 +1,0 @@
-
-streamlit run "C:/Users/Hp/Desktop/Multiple disease Prediction System/Multiple disease Prediction System.py"
