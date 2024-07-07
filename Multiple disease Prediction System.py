@@ -147,7 +147,7 @@ elif selected == 'Heart Disease Prediction':
         bold_white_text("Number of Major Vessels")
         ca = st.number_input('', min_value=0, max_value=3, key='heart_ca', help="Enter the number of major vessels colored by fluoroscopy.")
         bold_white_text("Thalassemia")
-        thal = st.selectbox('', ['Normal(0)', 'Fixed Defect(1)', 'Reversible Defect(2)'], key='heart_thal', help="Select the patient's thalassemia status.")
+        thal = st.selectbox('', ['Normal(0)', 'Fixed Defect(1)', 'Reversible Defect(2)','Irreversible Defect(3)'], key='heart_thal', help="Select the patient's thalassemia status.")
     
     if st.button('Predict Heart Disease'):
         sex_value = 1 if sex == 'Male(1)' else 0
@@ -156,7 +156,7 @@ elif selected == 'Heart Disease Prediction':
         restecg_value = ['Normal(0)', 'ST-T wave abnormality(1)', 'Left ventricular hypertrophy(2)'].index(restecg)
         exang_value = 1 if exang == 'Yes(1)' else 0
         slope_value = ['Upsloping(0)', 'Flat(1)', 'Downsloping(2)'].index(slope)
-        thal_value = ['Normal(0)', 'Fixed Defect(1)', 'Reversible Defect(2)'].index(thal)
+        thal_value = ['Normal(0)', 'Fixed Defect(1)', 'Reversible Defect(2)','Irreversible Defect(3)'].index(thal)
         
         heart_input_data = [age, sex_value, cp_value, trestbps, chol, fbs_value, restecg_value, thalach, exang_value, oldpeak, slope_value, ca, thal_value]
         with st.spinner('Predicting...'):
@@ -165,6 +165,5 @@ elif selected == 'Heart Disease Prediction':
             custom_message('The person is predicted to have heart disease.', 'error')
         else:
             custom_message('The person is predicted not to have heart disease.', 'success')
-
 
 
