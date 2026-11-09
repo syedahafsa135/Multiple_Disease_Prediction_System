@@ -2,12 +2,31 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pickle
 import base64
+from pathlib import Path
+
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+# All paths are relative to this file, so the app runs on any computer
+BASE = Path(__file__).resolve().parent
+DIABETES_FEATURES = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness',
+                     'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
 
 # Function to load models
+@st.cache_resource
 def load_models():
-    diabetes_model = pickle.load(open(r'C:/Users/Hp/Desktop/Multiple disease Prediction System/saved/diabetes_model (6).sav', 'rb'))
-    heart_disease_model = pickle.load(open(r'C:/Users/Hp/Desktop/Multiple disease Prediction System/saved/heart_disease_model (1).sav', 'rb'))
+    with open(BASE / 'sav_files' / 'diabetes_model (6).sav', 'rb') as f:
+        diabetes_model = pickle.load(f)
+    with open(BASE / 'sav_files' / 'heart_disease_model (1).sav', 'rb') as f:
+        heart_disease_model = pickle.load(f)
     return diabetes_model, heart_disease_model
+
+# The diabetes SVM was trained on standardised data (Diabetes_Prediction.ipynb, cells 33-37),
+# so app inputs must be scaled the same way. Rebuild that scaler from the same dataset.
+@st.cache_resource
+def load_diabetes_scaler():
+    data = pd.read_csv(BASE / 'data_models' / 'diabetes.csv')
+    return StandardScaler().fit(data[DIABETES_FEATURES])
 
 # Function to set background image
 def set_background(image_file):
@@ -63,6 +82,7 @@ st.set_page_config(
 
 # Load models
 diabetes_model, heart_disease_model = load_models()
+diabetes_scaler = load_diabetes_scaler()
 
 # Sidebar for navigation
 with st.sidebar:
@@ -83,7 +103,7 @@ def bold_white_text(label):
 
 # Set the background image according to the selected option
 if selected == 'Diabetes Prediction':
-    set_background('C:/Users/Hp/Desktop/Multiple disease Prediction System/diabetes_pic.jpg')
+    set_background(BASE / 'background_pic' / 'diabetes_pic.jpg')
     st.title('Diabetes Prediction')
     st.write('Enter patient details below:')
     col1, col2 = st.columns(2)
@@ -107,16 +127,19 @@ if selected == 'Diabetes Prediction':
         age = st.number_input('', min_value=21,max_value=81, key='age', help="Enter the patient's age.")
     
     if st.button('Predict Diabetes'):
-        input_data = [pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree, age]
+        input_data = pd.DataFrame(
+            [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree, age]],
+            columns=DIABETES_FEATURES,
+        )
         with st.spinner('Predicting...'):
-            diabetes_prediction = diabetes_model.predict([input_data])
+            diabetes_prediction = diabetes_model.predict(diabetes_scaler.transform(input_data))
         if diabetes_prediction[0] == 1:
             custom_message('The person is predicted to be diabetic.', 'error')
         else:
             custom_message('The person is predicted not to be diabetic.', 'success')
 
 elif selected == 'Heart Disease Prediction':
-    set_background('C:/Users/Hp/Desktop/Multiple disease Prediction System/heart_pic.jpg')
+    set_background(BASE / 'background_pic' / 'heart_pic.jpg')
     st.title('Heart Disease Prediction')
     st.write('Enter patient details below:')
     col1, col2 = st.columns(2)
