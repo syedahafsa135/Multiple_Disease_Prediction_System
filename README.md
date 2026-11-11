@@ -1,7 +1,8 @@
 # 🩺 Multiple Disease Prediction System
 
-<!-- Add a screenshot of the running app as images/app-screenshot.png -->
-![Streamlit app predicting diabetes and heart disease](images/app-screenshot.png)
+![Diabetes prediction page of the Streamlit app](images/app-diabetes.jpg)
+
+![Heart disease prediction page of the Streamlit app](images/app-heart.jpg)
 
 A Streamlit web app that estimates **diabetes** and **heart disease** risk from routine health measurements, using two trained machine learning classifiers.
 
@@ -9,7 +10,7 @@ A Streamlit web app that estimates **diabetes** and **heart disease** risk from 
 
 ---
 
-## Business question
+## Problem
 
 **Can a few routine measurements, such as glucose, BMI, blood pressure and cholesterol, flag patients who may need further testing for diabetes or heart disease?**
 
@@ -20,7 +21,7 @@ A Streamlit web app that estimates **diabetes** and **heart disease** risk from 
 | Diabetes | `data_models/diabetes.csv` | 768 patients, 8 features | 500 not diabetic, 268 diabetic |
 | Heart disease | `data_models/heart_disease_data.csv` | 303 patients, 13 features | 138 no disease, 165 disease |
 
-## Approach
+## Method
 
 **Diabetes** (`Diabetes_Prediction.ipynb`)
 1. EDA: distributions, box plots, and z-score outlier counts per feature
@@ -35,7 +36,7 @@ A Streamlit web app that estimates **diabetes** and **heart disease** risk from 
 
 Both models are saved in `sav_files/` and served in the Streamlit app (`Multiple disease Prediction System.py`).
 
-## Key findings
+## Results
 
 | Model | Test accuracy | Precision | Recall | F1 |
 |---|---|---|---|---|
@@ -59,6 +60,12 @@ streamlit run "Multiple disease Prediction System.py"
 ```
 
 The notebooks were written for Google Colab. To re-run them, open them in Colab and change the `read_csv` paths to the files in `data_models/`.
+
+## Limitations
+
+- Small test sets (61 heart patients, 154 diabetes patients): confirm the scores with cross-validation.
+- The diabetes model's recall of 0.519 is too low for screening; tune for recall (class weights or a lower threshold) first.
+- Both algorithms were also implemented from scratch for comparison (see Report.pdf); the app uses the scikit-learn versions.
 
 ## Project structure
 
